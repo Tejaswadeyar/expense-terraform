@@ -22,7 +22,7 @@ pipelines:
               tasks:
                 - exec:
                     command: terraform
-                    arguments: ["destory", "-backend-config=env-dev/state.tfvars"]
+                    arguments: ["destroy", "-backend-config=env-dev/state.tfvars" "-auto-approve"]
 
 
                 - exec:
