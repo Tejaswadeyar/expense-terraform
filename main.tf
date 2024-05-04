@@ -66,8 +66,9 @@ module "rds" {
   sg_cidr_blocks = var.app_subnets_cidr
 }
 
+
 module "backend" {
-  source = "./modules.app"
+  source = "./modules/app"
 
   app_port                = var.backend_app_port
   bastioncidrs            = var.bastion_cidrs
