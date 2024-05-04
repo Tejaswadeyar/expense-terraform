@@ -24,6 +24,13 @@ resource "aws_security_group" "main" {
     cidr_blocks      = var.sg_cidr_blocks
   }
 
+  egress {
+    from_port        = 0
+    to_port          = 0
+    protocol         = ["0.0.0.0/0"]
+    cidr_blocks      = ["::/0"]
+  }
+
 
 
 tags = {
@@ -45,5 +52,5 @@ resource "aws_db_instance" "main" {
   storage_encrypted    = true
   kms_key_id           = var.kms_key_id
   db_subnet_group_name = aws_db_parameter_group.main.name
-  vpc_security_group_ids = [aws_security_group.main.id]
+  vpc_security_group_ids = aws_security_group.main.id
 }
