@@ -3,7 +3,7 @@ resource "aws_db_parameter_group" "main" {
   family = var.family
 }
 
-resource "aws_db_subnet_group" "default" {
+resource "aws_db_subnet_group" "main" {
   name       = "${var.env}-${var.project_name}-sg"
   subnet_ids = var.subnet_ids
 
@@ -51,6 +51,6 @@ resource "aws_db_instance" "main" {
   skip_final_snapshot  = true
   storage_encrypted    = true
   kms_key_id           = var.kms_key_id
-  db_subnet_group_name = aws_db_parameter_group.main.name
+  db_subnet_group_name = aws_db_subnet_group.main.name
   vpc_security_group_ids = [aws_security_group.main.id]
 }
