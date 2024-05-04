@@ -71,7 +71,7 @@ module "backend" {
   source = "./modules/app"
 
   app_port                = var.backend_app_port
-  bastioncidrs            = var.bastion_cidrs
+  bastion_cidrs            = var.bastion_cidrs
   component               = "backend"
   env                     = var.env
   instance_capacity       = var.backend_instance_capacity
