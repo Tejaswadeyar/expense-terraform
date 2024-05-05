@@ -26,3 +26,4 @@ variable "frontend_app_port" {}
 variable "frontend_instance_capacity" {}
 variable "frontend_instance_type" {}
 variable "acm_arn" {}
+variable "zone_id" {}
