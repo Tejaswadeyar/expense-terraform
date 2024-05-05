@@ -11,3 +11,4 @@ variable "kms_key_id" {}
 variable "subnet_ids" {}
 variable "vpc_id" {}
 variable "sg_cidr_blocks" {}
+variable "acm_arn" {}

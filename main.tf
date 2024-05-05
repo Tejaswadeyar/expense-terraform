@@ -107,6 +107,7 @@ module "public-lb" {
 
   project_name   = var.project_name
   env            =  var.env
+  acm_arn        = var.acm_arn
 
 
   subnets        = module.vpc.public_subnets_ids
@@ -123,6 +124,7 @@ module "private-lb" {
 
   project_name   = var.project_name
   env            =  var.env
+  acm_arn        = var.acm_arn
 
 
   subnets        = module.vpc.app_subnets_ids
