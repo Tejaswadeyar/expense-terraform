@@ -110,7 +110,7 @@ module "public-lb" {
 
 
   subnets        = module.vpc.public_subnets_ids
-  vpc_id         = module.vpc
+  vpc_id         = module.vpc.vpc_id
 }
 
 
@@ -126,5 +126,5 @@ module "private-lb" {
 
 
   subnets        = module.vpc.app_subnets_ids
-  vpc_id         = module.vpc
+  vpc_id         = module.vpc.vpc_id
 }
