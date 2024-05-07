@@ -120,8 +120,8 @@ resource "aws_iam_role" "main" {
             "ssm:GetParameter"
           ],
           "Resource": concat([
-            "arn:aws:ssm:us-east-1:251895722409:parameter/dev.expense.backend.*",
-          "arn:aws:ssm:us-east-1:251895722409:parameter/${var.env}.${var.project_name}.${var.component}.*",
+            "arn:aws:kms:us-east-1:251895722409:key/3cc2468d-37e7-440b-b77b-eb9d2ac1325c",
+            "arn:aws:ssm:us-east-1:251895722409:parameter/${var.env}.${var.project_name}.${var.component}.*",
           ], var.parameters)
 
         },
