@@ -113,12 +113,14 @@ resource "aws_iam_role" "main" {
           "Sid": "GetParameter",
           "Effect": "Allow",
           "Action": [
+            "kms:Decrypt",
             "ssm:GetParameterHistory",
             "ssm:GetParametersByPath",
             "ssm:GetParameters",
             "ssm:GetParameter"
           ],
           "Resource": concat([
+            "arn:aws:ssm:us-east-1:251895722409:parameter/dev.expense.backend.*",
           "arn:aws:ssm:us-east-1:251895722409:parameter/${var.env}.${var.project_name}.${var.component}.*"
           ], var.parameters)
 
