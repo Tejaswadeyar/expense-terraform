@@ -49,6 +49,17 @@ resource "aws_launch_template" "main" {
   }
 }
 
+block_device_mappings {
+  device_name = "/dev/sda1"
+
+  ebs {
+    volume_size           = 10
+    encrypted             = true
+    kms_key_id            = var.kms
+    delete_on_termination = true
+  }
+}
+
 resource "aws_autoscaling_group" "main" {
   name               = "${local.name}-asg"
   desired_capacity   = var.instance_capacity
