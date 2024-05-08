@@ -4,19 +4,19 @@ resource "aws_security_group" "main" {
   vpc_id      = var.vpc_id
 
   ingress {
-    from_port        = 22
-    to_port          = 22
-    protocol         = "tcp"
-    cidr_blocks      = var.bastion_cidrs
-    description      = "SSH"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = var.bastion_cidrs
+    description = "SSH"
   }
 
   ingress {
-    from_port        = var.app_port
-    to_port          = var.app_port
-    protocol         = "tcp"
-    cidr_blocks      = var.sg_cidr_blocks
-    description      = "APPPORT"
+    from_port   = var.app_port
+    to_port     = var.app_port
+    protocol    = "tcp"
+    cidr_blocks = var.sg_cidr_blocks
+    description = "APPPORT"
   }
 
   egress {
@@ -24,6 +24,7 @@ resource "aws_security_group" "main" {
     to_port          = 0
     protocol         = "-1"
     cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
   }
 
   tags = {
@@ -59,26 +60,31 @@ resource "aws_launch_template" "main" {
 
 }
 
-
 resource "aws_autoscaling_group" "main" {
-  name               = "${local.name}-asg"
-  desired_capacity   = var.instance_capacity
-  max_size           = var.instance_capacity # TBD, this we will fine tune after autoscaling
-  min_size           = var.instance_capacity
+  name                = "${local.name}-asg"
+  desired_capacity    = var.instance_capacity
+  max_size            = var.instance_capacity # TBD, THis we will fine tune after autoscaling
+  min_size            = var.instance_capacity
   vpc_zone_identifier = var.vpc_zone_identifier
-  target_group_arns = [aws_lb_target_group.main.arn]
+  target_group_arns   = [aws_lb_target_group.main.arn]
 
   launch_template {
     id      = aws_launch_template.main.id
     version = "$Latest"
   }
 
-
   tag {
     key                 = "Name"
     value               = local.name
     propagate_at_launch = true
   }
+
+  tag {
+    key                 = "Monitor"
+    value               = "yes"
+    propagate_at_launch = true
+  }
+
 }
 
 resource "aws_lb_target_group" "main" {
@@ -86,18 +92,19 @@ resource "aws_lb_target_group" "main" {
   port     = var.app_port
   protocol = "HTTP"
   vpc_id   = var.vpc_id
+
   health_check {
-    path = "/health"
-    healthy_threshold = 2
+    path                = "/health"
+    healthy_threshold   = 2
     unhealthy_threshold = 2
-    interval = 5
-    timeout = 2
+    interval            = 5
+    timeout             = 2
   }
 }
 
 
 resource "aws_iam_role" "main" {
-  name               = "${local.name}-role"
+  name = "${local.name}-role"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -113,39 +120,37 @@ resource "aws_iam_role" "main" {
     ]
   })
 
-
   inline_policy {
     name = "parameter-store"
 
     policy = jsonencode({
-      "Version": "2012-10-17",
-      "Statement": [
+      "Version" : "2012-10-17",
+      "Statement" : [
         {
-          "Sid": "GetParameter",
-          "Effect": "Allow",
-          "Action": [
+          "Sid" : "GetParameter",
+          "Effect" : "Allow",
+          "Action" : [
             "kms:Decrypt",
             "ssm:GetParameterHistory",
             "ssm:GetParametersByPath",
             "ssm:GetParameters",
             "ssm:GetParameter"
           ],
-          "Resource": concat([
+          "Resource" : concat([
             "arn:aws:kms:us-east-1:251895722409:key/3cc2468d-37e7-440b-b77b-eb9d2ac1325c",
             "arn:aws:ssm:us-east-1:251895722409:parameter/${var.env}.${var.project_name}.${var.component}.*",
           ], var.parameters)
-
         },
         {
-          "Sid": "DescribeAllParameters",
-          "Effect": "Allow",
-          "Action": "ssm:DescribeParameters",
-          "Resource": "*"
+          "Sid" : "DescribeAllParameters",
+          "Effect" : "Allow",
+          "Action" : "ssm:DescribeParameters",
+          "Resource" : "*"
         }
       ]
     })
   }
-  }
+}
 
 resource "aws_iam_instance_profile" "main" {
   name = "${local.name}-role"
