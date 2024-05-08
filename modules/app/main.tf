@@ -86,7 +86,6 @@ resource "aws_lb_target_group" "main" {
   port     = var.app_port
   protocol = "HTTP"
   vpc_id   = var.vpc_id
-
   health_check {
     path = "/health"
     healthy_threshold = 2
@@ -146,7 +145,7 @@ resource "aws_iam_role" "main" {
       ]
     })
   }
-}
+  }
 
 resource "aws_iam_instance_profile" "main" {
   name = "${local.name}-role"
